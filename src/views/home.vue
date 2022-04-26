@@ -1,23 +1,23 @@
 <template>
   <div class="layout">
-    <el-header class="header"><h4>vue component</h4></el-header>
-    <el-container class="container">
+    <el-header class="header"><h4 @click="toChangeMenu('/home')">vue components</h4></el-header>
+    <el-container class="content">
       <el-aside class="aside" width="200px">
-        <el-menu :default-openeds="['1']" active-text-color="#0072ff">
-          <template v-for="(item, index) in menu" :key="index">
+        <el-menu class="menu" default-active="1-1" :default-openeds="['1']" active-text-color="#0072ff">
+          <template v-for="item in menu">
             <template v-if="item.subMenu">
-              <el-sub-menu :index="item.index">
+              <el-submenu :index="item.index" :key="item.index">
                 <template #title>
-                  <el-icon><setting /></el-icon>
+                  <i class="el-icon-setting"></i>
                   {{item.title}}
                 </template>
                 <el-menu-item :index="subMenu.index" v-for="(subMenu, k) in item.subMenu" :key="k" @click="toChangeMenu(subMenu.url)">
                   <span>{{subMenu.title}}</span>
                 </el-menu-item>
-              </el-sub-menu>
+              </el-submenu>
             </template>
-            <el-menu-item v-else :index="item.index" @click="toChangeMenu(subMenu.url)">
-              <el-icon><setting /></el-icon>
+            <el-menu-item v-else :key="item.index" :index="item.index" @click="toChangeMenu(subMenu.url)">
+              <i class="el-icon-setting"></i>
               <span>{{item.title}}</span>
             </el-menu-item>
           </template>
@@ -72,9 +72,22 @@ export default {
 </script>
 
 <style scoped lang="scss">
-.header{
-  display: flex;
-  align-items: center;
-  border-bottom: 1px solid #ddd ;
+.layout{
+  height: 100%;
+  .header{
+    display: flex;
+    align-items: center;
+    border-bottom: 1px solid #ddd ;
+  }
+  .content{
+    height: calc(100% - 60px);
+    .menu{
+      min-height: 100%;
+    }
+    .main{
+      min-height: 100%;
+    }
+  }
 }
+
 </style>

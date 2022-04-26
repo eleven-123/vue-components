@@ -1,143 +1,143 @@
 <template>
     <div :style="{marginTop: marginTop+'px'}" class="base_table_list_container">
-    <el-table
-            :data="list"
-            :default-sort="defaultSort"
-            :header-cell-style="{ background: '#eee', color: '#666',fontWeight: 'normal'}"
-            :height="height ==='removeHeight' ? null : height"
-            :maxHeight="maxHeight"
-            :show-summary="!!showSummaryArr.length"
-            :stripe="stripe"
-            :summary-method="!showSummaryArr.length ? null : getSummaries"
-            @select-all="selectAll"
-            @selection-change="handleSelectionChange"
-            @sort-change="sortChange" ref="table">
-        <!--region 选择框-->
-        <el-table-column
-            v-if="options.mutiSelect"
-            type="selection"
-            width="50"
-            :selectable="selectable"
-        ></el-table-column>
-        <!-- 数据列 -->
-        <template v-for="(column, index) in columns" >
+        <el-table
+                :data="list"
+                :default-sort="defaultSort"
+                :header-cell-style="{ background: '#eee', color: '#666',fontWeight: 'normal'}"
+                :height="height ==='removeHeight' ? null : height"
+                :maxHeight="maxHeight"
+                :show-summary="!!showSummaryArr.length"
+                :stripe="stripe"
+                :summary-method="!showSummaryArr.length ? null : getSummaries"
+                @select-all="selectAll"
+                @selection-change="handleSelectionChange"
+                @sort-change="sortChange" ref="table">
+            <!--region 选择框-->
             <el-table-column
-                v-if="column.columnType === 'slot'"
-                :prop="column.prop"
-                :key="column.prop"
-                :label="column.label"
-                :align="column.align"
-                :min-width="column.width"
-                :width="column.realWidth"
-            >
-                <template slot="header" slot-scope="scope">
-                    <template v-if="column.customHeader">
-                        <slot :name="column.slotHeadName" :data="column.label" />
-                    </template>
-                    <template v-else>
-                        <span>{{column.label}}</span>
-                    </template>
-                </template>
-                <template slot-scope="scope">
-                    <slot :name="column.slotName" :data="scope" />
-                </template>
-            </el-table-column>
-            <el-table-column
-                v-else
-                :prop="column.prop"
-                :key="column.prop"
-                :label="column.label"
-                :align="column.align"
-                :min-width="column.width"
-                :width="column.realWidth"
-                :sortable="column.sortable"
-                :sort-orders="column.sortOrders"
-            >
-                <template slot="header" slot-scope="scope">
-                    <template v-if="column.customHeader">
-                        <slot :name="column.slotHeadName" :data="column.label" />
-                    </template>
-                    <template v-else>
-                        <span>{{column.label}}</span>
-                    </template>
-                </template>
-                <template slot-scope="scope">
-                    <template v-if="!column.render">
-                        <template v-if="column.formatter">
-                            <span
-                                v-html="column.formatter(scope.row, column)"
-                            ></span>
+                v-if="options.mutiSelect"
+                type="selection"
+                width="50"
+                :selectable="selectable"
+            ></el-table-column>
+            <!-- 数据列 -->
+            <template v-for="(column, index) in columns" >
+                <el-table-column
+                    v-if="column.columnType === 'slot'"
+                    :prop="column.prop"
+                    :key="column.prop"
+                    :label="column.label"
+                    :align="column.align"
+                    :min-width="column.width"
+                    :width="column.realWidth"
+                >
+                    <template slot="header" slot-scope="scope">
+                        <template v-if="column.customHeader">
+                            <slot :name="column.slotHeadName" :data="column.label" />
                         </template>
                         <template v-else>
-                            <span>{{ scope.row[column.prop] }}</span>
+                            <span>{{column.label}}</span>
                         </template>
                     </template>
-                    <template v-else>
-                        <expand-dom
-                            :column="column"
-                            :row="scope.row"
-                            :render="column.render"
-                            :index="index"
-                        ></expand-dom>
+                    <template slot-scope="scope">
+                        <slot :name="column.slotName" :data="scope" />
                     </template>
+                </el-table-column>
+                <el-table-column
+                    v-else
+                    :prop="column.prop"
+                    :key="column.prop"
+                    :label="column.label"
+                    :align="column.align"
+                    :min-width="column.width"
+                    :width="column.realWidth"
+                    :sortable="column.sortable"
+                    :sort-orders="column.sortOrders"
+                >
+                    <template slot="header" slot-scope="scope">
+                        <template v-if="column.customHeader">
+                            <slot :name="column.slotHeadName" :data="column.label" />
+                        </template>
+                        <template v-else>
+                            <span>{{column.label}}</span>
+                        </template>
+                    </template>
+                    <template slot-scope="scope">
+                        <template v-if="!column.render">
+                            <template v-if="column.formatter">
+                                <span
+                                    v-html="column.formatter(scope.row, column)"
+                                ></span>
+                            </template>
+                            <template v-else>
+                                <span>{{ scope.row[column.prop] }}</span>
+                            </template>
+                        </template>
+                        <template v-else>
+                            <expand-dom
+                                :column="column"
+                                :row="scope.row"
+                                :render="column.render"
+                                :index="index"
+                            ></expand-dom>
+                        </template>
+                    </template>
+                </el-table-column>
+            </template>
+            <!-- 按钮操作组 -->
+            <el-table-column
+                :label="operates.label"
+                :align="operates.align"
+                :min-width="operates.width"
+                :width="operates.realWidth"
+                :fixed="operates.fixed"
+                v-if="operates && operates.list.length > 0"
+            >
+                <template slot-scope="scope">
+                    <el-popover
+                        :trigger="operates.trigger"
+                        placement="left-start"
+                        popper-class="btl_operate_popper"
+                    >
+                        <el-button class="blue" type="text" slot="reference">{{operates.label}}</el-button>
+                        <template v-for="(btn, key) in operates.list">
+                            <div class="btl_operate_item" v-if="typeof btn.show == 'function' ?btn.show(key, scope.row):btn.show" :key='btn.id'>
+
+                                <el-button
+                                    v-if="!btn.isPopover"
+                                    class="btl_operate_item_btn"
+                                    :type="btn.type"
+                                    :size="btn.size || 'small'"
+                                    :icon="btn.icon"
+                                    :disabled="btn.disabled"
+                                    :plain="btn.plain"
+                                    @click.native.prevent="btn.method(key, scope.row)"
+                                > {{ typeof btn.label == 'function' ? btn.label(key,scope.row): btn.label }}
+                                </el-button>
+                            <el-popover v-else trigger="hover" placement="right">
+                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center">
+                                <el-button
+                                    v-for="(popoverItem, popoverIndex) in  (btn.popoverList || [])" :key="popoverIndex"
+                                    style="margin-bottom: 10px"
+                                    @click.native.prevent="btn.method(popoverItem, scope.row)"
+                                    size="small">
+                                    {{popoverItem.label}}
+                                </el-button>
+                                </div>
+                                <el-button slot="reference">{{ btn.label }}</el-button>
+                            </el-popover>
+                            </div>
+                        </template>
+                    </el-popover>
                 </template>
             </el-table-column>
-        </template>
-        <!-- 按钮操作组 -->
-        <el-table-column
-            :label="operates.label"
-            :align="operates.align"
-            :min-width="operates.width"
-            :width="operates.realWidth"
-            :fixed="operates.fixed"
-            v-if="operates && operates.list.length > 0"
-        >
-            <template slot-scope="scope">
-                <el-popover
-                    :trigger="operates.trigger"
-                    placement="left-start"
-                    popper-class="btl_operate_popper"
-                >
-                    <el-button class="blue" type="text" slot="reference">{{operates.label}}</el-button>
-                    <template v-for="(btn, key) in operates.list">
-                        <div class="btl_operate_item" v-if="typeof btn.show == 'function' ?btn.show(key, scope.row):btn.show" :key='btn.id'>
-
-                            <el-button
-                                v-if="!btn.isPopover"
-                                class="btl_operate_item_btn"
-                                :type="btn.type"
-                                :size="btn.size || 'small'"
-                                :icon="btn.icon"
-                                :disabled="btn.disabled"
-                                :plain="btn.plain"
-                                @click.native.prevent="btn.method(key, scope.row)"
-                            > {{ typeof btn.label == 'function' ? btn.label(key,scope.row): btn.label }}
-                            </el-button>
-                          <el-popover v-else trigger="hover" placement="right">
-                            <div style="display: flex;flex-direction: column;justify-content: center;align-items: center">
-                              <el-button
-                                v-for="(popoverItem, popoverIndex) in  (btn.popoverList || [])" :key="popoverIndex"
-                                style="margin-bottom: 10px"
-                                @click.native.prevent="btn.method(popoverItem, scope.row)"
-                                size="small">
-                                {{popoverItem.label}}
-                              </el-button>
-                            </div>
-                            <el-button slot="reference">{{ btn.label }}</el-button>
-                          </el-popover>
-                        </div>
-                    </template>
-                </el-popover>
-            </template>
-        </el-table-column>
-    </el-table>
-    <div class="btl_pagination" v-if="hasPagination" :class="paginationclass">
-         <Pagination :currentPage="currentPage" :pageSize="pageSize" :pageSizes="pageSizes" :total="total" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange"></Pagination>
-    </div>
+        </el-table>
+        <div class="btl_pagination" v-if="hasPagination" :class="paginationclass">
+            <Pagination :currentPage="currentPage" :pageSize="pageSize" :pageSizes="pageSizes" :total="total" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange"></Pagination>
+        </div>
     </div>
 </template>
 <script>
-import Pagination from '@/components/TablePagination'
+import Pagination from '@/components/Pagination'
 import { removeResizeListener } from 'element-ui/src/utils/resize-event';
 
 export default {

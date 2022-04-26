@@ -1,16 +1,23 @@
-import { createRouter, createWebHashHistory } from "vue-router"
+import Vue from 'vue'
+import Router from 'vue-router'
+Vue.use(Router)
 
 const childRoutes = [
   {
     path: '/elTableList',
     name: 'elTableList',
     component: () => import(/* webpackChunkName: "elTableList" */ '@/views/tableList/elTableList'),
+  },
+  {
+    path: '/tableList',
+    name: 'tableList',
+    component: () => import(/* webpackChunkName: "tableList" */ '@/views/tableList/tableList'),
   }
 ]
 const routes = [
     {
       path: '/',
-      redirect: '/home'
+      redirect: '/elTableList'
     },
     {
       path: '/home',
@@ -19,8 +26,12 @@ const routes = [
       children: childRoutes
     },
 ]
-const router = createRouter({
-    history: createWebHashHistory(),
-    routes
+
+const router = new Router({
+  mode: 'hash',
+  routes,
+  scrollBehavior () {
+    return { x: 0, y: 0 }
+  }
 })
 export default router

@@ -1,18 +1,14 @@
-import { createApp } from 'vue'
+import Vue from 'vue'
 import App from './App.vue'
 import router from './router'
+import 'element-ui/lib/theme-chalk/index.css'
 
 // element引入
-import element from 'element-plus';
-import 'element-plus/theme-chalk/index.css';
-import * as Icons from '@element-plus/icons-vue' // 引入所有图标，并命名为 Icons
+import '@/assets/js/element-import.js'
 
-const app = createApp(App)
-// 通过遍历的形式注册所有 svg组件，会就义一点点性能
-for (let i in Icons) {
-    app.component(i, Icons[i])
-}
+Vue.config.productionTip = false
 
-app.use(router)
-app.use(element)
-app.mount('#app')
+new Vue({
+  router,
+  render: h => h(App),
+}).$mount('#app')
