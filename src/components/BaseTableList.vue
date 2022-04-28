@@ -31,7 +31,7 @@
                         </th>
                         <!-- 操作列 -->
                         <th class="el-table__cell" v-if="operates && operates.list.length > 0" :style="formatterStyleObj(operates)">
-                            <div class="cell">{{p_exchangeLang('操作')}}</div>
+                            <div class="cell">{{'操作'}}</div>
                         </th>
                     </tr>
                 </thead>
@@ -110,13 +110,13 @@
                 <tfoot>
                     <tr v-if="isShowPageTotal">
                         <td class="el-table__cell" v-for="(column, index) in columns" :key="column.prop" :colspan="options.mutiSelect && index === 0 ? 2 : 1" :style="formatterStyleObj(column)">
-                            <div class="cell" v-if="index===0">{{p_exchangeLang('本页合计')}}</div>
+                            <div class="cell" v-if="index===0">{{'本页合计'}}</div>
                             <div class="cell" v-else>{{formatterTotal(column, extendsTotalData[column.pageTotalProp])}}</div>
                         </td>
                     </tr>
                     <tr v-if="isShowAllTotal">
                         <td class="el-table__cell" v-for="(column, index) in columns" :key="column.prop" :colspan="options.mutiSelect && index === 0 ? 2 : 1" :style="formatterStyleObj(column)">
-                            <div class="cell" v-if="index===0">{{p_exchangeLang('合计')}}</div>
+                            <div class="cell" v-if="index===0">{{'合计'}}</div>
                             <div class="cell" v-else>{{formatterTotal(column, extendsTotalData[column.totalProp])}}</div>
                         </td>
                     </tr>
@@ -124,140 +124,9 @@
             </table>
             <!-- 无数据 -->
             <div class="el-table__empty-block" v-if="list.length < 1">
-                <span class="el-table__empty-text">{{p_exchangeLang('暂无数据')}}</span>
+                <span class="el-table__empty-text">{{'暂无数据'}}</span>
             </div>
         </div>
-        <el-table
-                :data="list"
-                :default-sort="defaultSort"
-                :header-cell-style="{ background: '#eee', color: '#666',fontWeight: 'normal'}"
-                :height="height ==='removeHeight' ? null : height"
-                :maxHeight="maxHeight"
-                :show-summary="!!showSummaryArr.length"
-                :stripe="stripe"
-                :summary-method="!showSummaryArr.length ? null : getSummaries"
-                @select-all="selectAll"
-                @selection-change="handleSelectionChange"
-                @sort-change="sortChange" ref="table">
-            <!--region 选择框-->
-            <el-table-column
-                v-if="options.mutiSelect"
-                type="selection"
-                width="50"
-                :selectable="selectable"
-            ></el-table-column>
-            <!-- 数据列 -->
-            <template v-for="(column, index) in columns" >
-                <el-table-column
-                    v-if="column.columnType === 'slot'"
-                    :prop="column.prop"
-                    :key="column.prop"
-                    :label="column.label"
-                    :align="column.align"
-                    :min-width="column.width"
-                    :width="column.realWidth"
-                >
-                    <template slot="header" slot-scope="scope">
-                        <template v-if="column.customHeader">
-                            <slot :name="column.slotHeadName" :data="column.label" />
-                        </template>
-                        <template v-else>
-                            <span>{{column.label}}</span>
-                        </template>
-                    </template>
-                    <template slot-scope="scope">
-                        <slot :name="column.slotName" :data="scope" />
-                    </template>
-                </el-table-column>
-                <el-table-column
-                    v-else
-                    :prop="column.prop"
-                    :key="column.prop"
-                    :label="column.label"
-                    :align="column.align"
-                    :min-width="column.width"
-                    :width="column.realWidth"
-                    :sortable="column.sortable"
-                    :sort-orders="column.sortOrders"
-                >
-                    <template slot="header" slot-scope="scope">
-                        <template v-if="column.customHeader">
-                            <slot :name="column.slotHeadName" :data="column.label" />
-                        </template>
-                        <template v-else>
-                            <span>{{column.label}}</span>
-                        </template>
-                    </template>
-                    <template slot-scope="scope">
-                        <template v-if="!column.render">
-                            <template v-if="column.formatter">
-                                <span
-                                    v-html="column.formatter(scope.row, column)"
-                                ></span>
-                            </template>
-                            <template v-else>
-                                <span>{{ scope.row[column.prop] }}</span>
-                            </template>
-                        </template>
-                        <template v-else>
-                            <expand-dom
-                                :column="column"
-                                :row="scope.row"
-                                :render="column.render"
-                                :index="index"
-                            ></expand-dom>
-                        </template>
-                    </template>
-                </el-table-column>
-            </template>
-            <!-- 按钮操作组 -->
-            <el-table-column
-                :label="operates.label"
-                :align="operates.align"
-                :min-width="operates.width"
-                :width="operates.realWidth"
-                :fixed="operates.fixed"
-                v-if="operates && operates.list.length > 0"
-            >
-                <template slot-scope="scope">
-                    <el-popover
-                        :trigger="operates.trigger"
-                        placement="left-start"
-                        popper-class="btl_operate_popper"
-                    >
-                        <el-button class="blue" type="text" slot="reference">{{operates.label}}</el-button>
-                        <template v-for="(btn, key) in operates.list">
-                            <div class="btl_operate_item" v-if="typeof btn.show == 'function' ?btn.show(key, scope.row):btn.show" :key='btn.id'>
-
-                                <el-button
-                                    v-if="!btn.isPopover"
-                                    class="btl_operate_item_btn"
-                                    :type="btn.type"
-                                    :size="btn.size || 'small'"
-                                    :icon="btn.icon"
-                                    :disabled="btn.disabled"
-                                    :plain="btn.plain"
-                                    @click.native.prevent="btn.method(key, scope.row)"
-                                > {{ typeof btn.label == 'function' ? btn.label(key,scope.row): btn.label }}
-                                </el-button>
-                            <el-popover v-else trigger="hover" placement="right">
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center">
-                                <el-button
-                                    v-for="(popoverItem, popoverIndex) in  (btn.popoverList || [])" :key="popoverIndex"
-                                    style="margin-bottom: 10px"
-                                    @click.native.prevent="btn.method(popoverItem, scope.row)"
-                                    size="small">
-                                    {{popoverItem.label}}
-                                </el-button>
-                                </div>
-                                <el-button slot="reference">{{ btn.label }}</el-button>
-                            </el-popover>
-                            </div>
-                        </template>
-                    </el-popover>
-                </template>
-            </el-table-column>
-        </el-table>
         <div class="btl_pagination" v-if="hasPagination" :class="paginationclass">
             <Pagination :currentPage="currentPage" :pageSize="pageSize" :pageSizes="pageSizes" :total="total" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange"></Pagination>
         </div>
@@ -302,8 +171,8 @@ export default {
             width：列宽
             formatter: 格式化
             columnType: 'slot', 列的类型-插槽
-            slotName: 插槽名
-
+            slotName: 插槽名(Srting)
+            sortable: 列是否排序(Boolean)
             pageTotalProp: 本页合计对应的属性
             totalProp: 合计对应的属性
             formatterTotal: 本页合计/合计数据类型：number-数字(默认)、money-金额、percent-百分比(金额)、float-浮点数(金额)、function
@@ -373,9 +242,15 @@ export default {
             type: [Number, String],
             default: 'removeHeight'
         },
+        // 默认的排序列
         defaultSort: {
             type: Object,
-            default: () => {}
+            default: () => {
+                /* 
+                 * prop: 'classtime', //列的属性,即 column.prop
+                 * order: 'descending' //升序ascending or 降序descending
+                */
+            }
         },
         paginationclass: {
             type: Object,
@@ -406,12 +281,14 @@ export default {
         }
     },
     computed:{
-        isShowPageTotal () {
+        // 是否显示本页合计
+        isShowPageTotal() {
             return this.showPageTotal && this.list.length > 0
         },
-        isShowAllTotal () {
+        // 是否显示合计
+        isShowAllTotal() {
             return this.showAllTotal && this.list.length > 0
-        }
+        },
     },
     data() {
         return {
@@ -422,25 +299,6 @@ export default {
         };
     },
     methods: {
-        //自定义 合计 (根据接口字段数据合计)
-        getSummaries(param){
-            const { columns, data } = param;
-            const sums = [];
-            columns.forEach((column, index) => {
-            if (index === 0) {
-                sums[index] = this.p_exchangeLang('合计');
-                return;
-            }
-            let obj = this.showSummaryArr.find(item => item.prop === column.property)
-            if(obj) {
-                const values = data.map(item => item[obj.totalProp]);
-                sums[index] = obj.isFormatMoney ? this.p_formatMoney(values[0]) :  values[0]
-            } else {
-                sums[index] = '';
-            }
-            });
-            return sums;
-        },
         handleSelectionChange(val) {
             this.multipleSelection = val
             this.$emit('handleSelectionChange', this.multipleSelection)
@@ -459,14 +317,15 @@ export default {
         },
         // 排序
         sortChange(val){
+            let sortOrders = ['descending', 'ascending'];
             if(this.sortOrderProp !== val.prop){
                 this.sortOrderType = ''
                 this.sortOrderProp = val.prop
             }
             if(!this.sortOrderType){
-                this.sortOrderType = val.sortOrders[0] || 'ascending'
+                this.sortOrderType = sortOrders[0]
             }else{
-                this.sortOrderType = (this.sortOrderType === val.sortOrders[0] ? val.sortOrders[1] : val.sortOrders[0]) || (this.sortOrderType === 'ascending' ? 'descending' : 'ascending')
+                this.sortOrderType = this.sortOrderType === sortOrders[0] ? sortOrders[1] : sortOrders[0]
             }
             let obj = {
                 column: val,
@@ -513,6 +372,12 @@ export default {
             }
         }
     },
+    mounted(){
+        if(this.defaultSort.prop){
+            this.sortOrderProp = this.defaultSort.prop
+            this.sortOrderType = this.defaultSort.order
+        }
+    }
 };
 </script>
 <style lang="scss">

@@ -1,26 +1,34 @@
 <template>
-    <div :style="{marginTop: marginTop+'px'}" class="base_table_list_container">
+    <div
+        :style="{ marginTop: marginTop + 'px' }"
+        class="base_table_list_container"
+    >
         <el-table
-                :data="list"
-                :default-sort="defaultSort"
-                :header-cell-style="{ background: '#eee', color: '#666',fontWeight: 'normal'}"
-                :height="height ==='removeHeight' ? null : height"
-                :maxHeight="maxHeight"
-                :show-summary="!!showSummaryArr.length"
-                :stripe="stripe"
-                :summary-method="!showSummaryArr.length ? null : getSummaries"
-                @select-all="selectAll"
-                @selection-change="handleSelectionChange"
-                @sort-change="sortChange" ref="table">
+            :data="list"
+            :default-sort="defaultSort"
+            :header-cell-style="{
+                background: '#eee',
+                color: '#666',
+                fontWeight: 'normal',
+            }"
+            :height="height === 'removeHeight' ? null : height"
+            :maxHeight="maxHeight"
+            :stripe="stripe"
+            :show-summary="showAllTotal || showPageTotal && list.length > 0"
+            :summary-method="(showAllTotal || showPageTotal && list.length > 0) ? getSummaries : null"
+            @select-all="selectAll"
+            @selection-change="handleSelectionChange"
+            @sort-change="sortChange"
+            ref="table"
+        >
             <!--region 选择框-->
             <el-table-column
                 v-if="options.mutiSelect"
                 type="selection"
                 width="50"
-                :selectable="selectable"
             ></el-table-column>
             <!-- 数据列 -->
-            <template v-for="(column, index) in columns" >
+            <template v-for="(column, index) in columns">
                 <el-table-column
                     v-if="column.columnType === 'slot'"
                     :prop="column.prop"
@@ -32,10 +40,13 @@
                 >
                     <template slot="header" slot-scope="scope">
                         <template v-if="column.customHeader">
-                            <slot :name="column.slotHeadName" :data="column.label" />
+                            <slot
+                                :name="column.slotHeadName"
+                                :data="column.label"
+                            />
                         </template>
                         <template v-else>
-                            <span>{{column.label}}</span>
+                            <span>{{ column.label }}</span>
                         </template>
                     </template>
                     <template slot-scope="scope">
@@ -55,10 +66,13 @@
                 >
                     <template slot="header" slot-scope="scope">
                         <template v-if="column.customHeader">
-                            <slot :name="column.slotHeadName" :data="column.label" />
+                            <slot
+                                :name="column.slotHeadName"
+                                :data="column.label"
+                            />
                         </template>
                         <template v-else>
-                            <span>{{column.label}}</span>
+                            <span>{{ column.label }}</span>
                         </template>
                     </template>
                     <template slot-scope="scope">
@@ -98,10 +112,19 @@
                         placement="left-start"
                         popper-class="btl_operate_popper"
                     >
-                        <el-button class="blue" type="text" slot="reference">{{operates.label}}</el-button>
+                        <el-button class="blue" type="text" slot="reference">{{
+                            operates.label
+                        }}</el-button>
                         <template v-for="(btn, key) in operates.list">
-                            <div class="btl_operate_item" v-if="typeof btn.show == 'function' ?btn.show(key, scope.row):btn.show" :key='btn.id'>
-
+                            <div
+                                class="btl_operate_item"
+                                v-if="
+                                    typeof btn.show == 'function'
+                                        ? btn.show(key, scope.row)
+                                        : btn.show
+                                "
+                                :key="btn.id"
+                            >
                                 <el-button
                                     v-if="!btn.isPopover"
                                     class="btl_operate_item_btn"
@@ -110,35 +133,76 @@
                                     :icon="btn.icon"
                                     :disabled="btn.disabled"
                                     :plain="btn.plain"
-                                    @click.native.prevent="btn.method(key, scope.row)"
-                                > {{ typeof btn.label == 'function' ? btn.label(key,scope.row): btn.label }}
+                                    @click.native.prevent="
+                                        btn.method(key, scope.row)
+                                    "
+                                >
+                                    {{
+                                        typeof btn.label == "function"
+                                            ? btn.label(key, scope.row)
+                                            : btn.label
+                                    }}
                                 </el-button>
-                            <el-popover v-else trigger="hover" placement="right">
-                                <div style="display: flex;flex-direction: column;justify-content: center;align-items: center">
-                                <el-button
-                                    v-for="(popoverItem, popoverIndex) in  (btn.popoverList || [])" :key="popoverIndex"
-                                    style="margin-bottom: 10px"
-                                    @click.native.prevent="btn.method(popoverItem, scope.row)"
-                                    size="small">
-                                    {{popoverItem.label}}
-                                </el-button>
-                                </div>
-                                <el-button slot="reference">{{ btn.label }}</el-button>
-                            </el-popover>
+                                <el-popover
+                                    v-else
+                                    trigger="hover"
+                                    placement="right"
+                                >
+                                    <div
+                                        style="
+                                            display: flex;
+                                            flex-direction: column;
+                                            justify-content: center;
+                                            align-items: center;
+                                        "
+                                    >
+                                        <el-button
+                                            v-for="(
+                                                popoverItem, popoverIndex
+                                            ) in btn.popoverList || []"
+                                            :key="popoverIndex"
+                                            style="margin-bottom: 10px"
+                                            @click.native.prevent="
+                                                btn.method(
+                                                    popoverItem,
+                                                    scope.row
+                                                )
+                                            "
+                                            size="small"
+                                        >
+                                            {{ popoverItem.label }}
+                                        </el-button>
+                                    </div>
+                                    <el-button slot="reference">{{
+                                        btn.label
+                                    }}</el-button>
+                                </el-popover>
                             </div>
                         </template>
                     </el-popover>
                 </template>
             </el-table-column>
         </el-table>
-        <div class="btl_pagination" v-if="hasPagination" :class="paginationclass">
-            <Pagination :currentPage="currentPage" :pageSize="pageSize" :pageSizes="pageSizes" :total="total" @handleCurrentChange="handleCurrentChange" @handleSizeChange="handleSizeChange"></Pagination>
+        <div
+            class="btl_pagination"
+            v-if="hasPagination"
+            :class="paginationclass"
+        >
+            <Pagination
+                :currentPage="currentPage"
+                :pageSize="pageSize"
+                :pageSizes="pageSizes"
+                :total="total"
+                @handleCurrentChange="handleCurrentChange"
+                @handleSizeChange="handleSizeChange"
+            ></Pagination>
         </div>
     </div>
 </template>
 <script>
-import Pagination from '@/components/Pagination'
-import { removeResizeListener } from 'element-ui/src/utils/resize-event';
+import ElTableFooter from '@/components/ElTableFooter'
+import Pagination from "@/components/Pagination";
+import { removeResizeListener } from "element-ui/src/utils/resize-event";
 
 export default {
     components: {
@@ -163,6 +227,7 @@ export default {
             },
         },
         Pagination,
+        ElTableFooter
     },
     props: {
         list: {
@@ -193,241 +258,309 @@ export default {
         ***/
         operates: {
             type: Object,
-            default: () => {}
+            default: () => {},
         },
         options: {
             type: Object,
             default: () => ({
                 stripe: false, // 是否为斑马纹 table
                 highlightCurrentRow: false, // 是否要高亮当前行
-                mutiSelect: false //是否有选择框
+                mutiSelect: false, //是否有选择框
             }),
         }, // table 表格的控制参数
 
         /* 分页 */
-        total:{
+        total: {
             type: Number,
-            default: 0
+            default: 0,
         },
-        currentPage:{
+        currentPage: {
             type: Number,
-            default: 1
+            default: 1,
         },
-        pageSize:{
+        pageSize: {
             type: Number,
-            default: 10
+            default: 10,
         },
-        pageSizes:{
+        pageSizes: {
             type: Array,
-            default: () => [10, 20, 30, 40]
+            default: () => [10, 20, 30, 40],
         },
-        selectable:{
-            type: Function,
-            default: function () {}
-        },
-        hasPagination:{
+        hasPagination: {
             type: Boolean,
-            default: true
+            default: true,
         },
         marginTop: {
             type: [Number, String],
-            default: 20
+            default: 20,
         },
         maxHeight: {
             type: [Number, String],
-            default: 'auto'
+            default: "auto",
         },
         height: {
             type: [Number, String],
-            default: 'removeHeight'
+            default: "removeHeight",
         },
         defaultSort: {
             type: Object,
-            default: () => {}
+            default: () => {},
         },
         paginationclass: {
             type: Object,
-            default: () => {}
+            default: () => {},
         },
-      stripe:{
-        type: Boolean,
-        default: true
-      },
-      showSummaryArr:{ // 合计的字段数组 （接口数据合计）
-        type: Array,
-        default: () => []
-      },
-
+        stripe: {
+            type: Boolean,
+            default: true,
+        },
+        // 合计、本页合计数据
+        extendsTotalData: {
+            type: Object,
+            default: () => {},
+        },
+        showAllTotal: {
+            type: Boolean,
+            default: false
+        },
+        showPageTotal: {
+            type: Boolean,
+            default: false
+        }
     },
     data() {
         return {
             pageIndex: 1,
-            multipleSelection: [] // 多行选中
+            multipleSelection: [], // 多行选中
         };
     },
     methods: {
-      //自定义 合计 (根据接口字段数据合计)
-      getSummaries(param){
-        const { columns, data } = param;
-        const sums = [];
-        columns.forEach((column, index) => {
-          if (index === 0) {
-            sums[index] = this.p_exchangeLang('合计');
-            return;
-          }
-          let obj = this.showSummaryArr.find(item => item.prop === column.property)
-          if(obj) {
-            const values = data.map(item => item[obj.totalProp]);
-            sums[index] = obj.isFormatMoney ? this.p_formatMoney(values[0]) :  values[0]
-          } else {
-            sums[index] = '';
-          }
-        });
-        return sums;
-      },
+        //自定义 合计 (根据接口字段数据合计)
+        getSummaries(param) {
+            const { columns, data } = param;
+            const sums = [];
+            columns.forEach((column, index) => {                
+                let obj = this.columns.find(
+                    (item) => item.prop === column.property
+                );                
+                if (index === 0) {
+                    column.colSpan = this.options.mutiSelect ? 2 : 1
+                    sums[index] = (() => {
+                        let summaryPage, summaryTotal;
+                        if(this.showPageTotal){
+                            summaryPage = <div class='summary_page'>本页合计</div>
+                        }
+                        if(this.showAllTotal){
+                            summaryTotal = <div class="summary_total">合计</div>
+                        }
+                        return <div>{summaryPage}{summaryTotal}</div>
+                    })();
+                    return;
+                }
+                if (obj) {
+                    sums[index] = (() => {
+                        let summaryPage, summaryTotal;
+                        if(this.showPageTotal){
+                            summaryPage = <div class='summary_page'>{this.formatterTotal(obj, this.extendsTotalData[obj.pageTotalProp])}</div>
+                        }
+                        if(this.showAllTotal){
+                            summaryTotal = <div class="summary_total">{this.formatterTotal(obj, this.extendsTotalData[obj.totalProp])}</div>
+                        }
+                        return <div>{summaryPage}{summaryTotal}</div>
+                    })();
+                } else {
+                    sums[index] = "";
+                }
+            });
+            return sums;
+        },
         handleSelectionChange(val) {
-            this.multipleSelection = val
-            this.$emit('handleSelectionChange', this.multipleSelection)
+            console.log('选中行---', val)
+            this.multipleSelection = val;
+            this.$emit("handleSelectionChange", this.multipleSelection);
         },
-        handleSizeChange(pageSize){
-            this.$emit('sizeChange', pageSize)
+        handleSizeChange(pageSize) {
+            this.$emit("sizeChange", pageSize);
         },
-        handleCurrentChange(currentPage){
-            this.$emit('currentChange', currentPage)
+        handleCurrentChange(currentPage) {
+            this.$emit("currentChange", currentPage);
         },
-        refresh(){
-            this.$emit('refresh')
+        refresh() {
+            this.$emit("refresh");
         },
-        selectAll(val){
-            this.$emit('selectAll', val)
+        selectAll(val) {
+            this.$emit("selectAll", val);
         },
-        sortChange(val){
-            this.$emit('sortChange', val)
+        sortChange(val) {
+            this.$emit("sortChange", val);
         },
-        resizeMainView(){
+        resizeMainView() {
             const table = this.$refs.table;
-            table.doLayout()
+            table.doLayout();
+        },
+        // 合计数据-格式化
+        formatterTotal(column, data){
+            column.formatterTotal = column.formatterTotal || 'number';
+            let type = typeof(column.formatterTotal)
+            if(type === 'function'){
+                return column.formatterTotal(data || '222')
+            }else{
+                if(column.formatterTotal === 'money'){
+                    return this.p_formatMoney(data || 0)
+                }else if(column.formatterTotal === 'percent'){
+                    return this.p_showPrice(data || 0) + '%'
+                }else if(column.formatterTotal === 'float'){
+                    return this.p_showPrice(data || 0)
+                }else{ // number
+                    return data
+                }
+            }
         }
     },
-    mounted () {
+    mounted() {
         const table = this.$refs.table;
-        removeResizeListener(table.$el, table.resizeListener)
-        window.addEventListener("resize", this.resizeMainView)
+        removeResizeListener(table.$el, table.resizeListener);
+        window.addEventListener("resize", this.resizeMainView);        
     },
-    beforeDestroy () {
-        window.removeEventListener("resize", this.resizeMainView)
+    beforeDestroy() {
+        window.removeEventListener("resize", this.resizeMainView);
     },
     watch: {
-        list(){
-            this.$nextTick(this.resizeMainView)
+        list() {
+            this.$nextTick(this.resizeMainView);
         },
         columns(){
-            this.$nextTick(this.resizeMainView)
-        }
-    }
+            this.$nextTick(this.resizeMainView);
+        },
+    },
 };
 </script>
 <style lang="scss">
-.blue,.blue:hover { color: #0A83FF !important }
-.btl_operate_popper{
+.blue,
+.blue:hover {
+    color: #0a83ff !important;
+}
+.btl_operate_popper {
     min-width: auto;
     padding: 0 !important;
     box-shadow: 1px 1px 5px 0px #aaa;
-    .btl_operate_item{
+    .btl_operate_item {
         border-top: 1px solid #ddd;
-        &:first-child{
+        &:first-child {
             border: 0;
         }
     }
-    .btl_operate_item:hover .el-button{
+    .btl_operate_item:hover .el-button {
         color: #333;
         background: #eee;
     }
-    .btl_operate_item_btn{
+    .btl_operate_item_btn {
         padding: 0 15px;
         line-height: 40px;
         font-size: 14px;
-        border:0
+        border: 0;
     }
 }
-.btl_pagination{
+.btl_pagination {
     margin-top: 24px;
     display: flex;
     justify-content: flex-end;
     align-items: center;
-    width:100%;
+    width: 100%;
     flex-wrap: wrap;
-    .btl_refresh_icon{
+    .btl_refresh_icon {
         margin: 0 20px;
         font-size: 20px;
         color: #2aba65;
         cursor: pointer;
     }
     padding-right: 20px;
-    .el-pagination{
-        .el-pager{
-            .number{
-                border: 1px solid #DADBDF;
+    .el-pagination {
+        .el-pager {
+            .number {
+                border: 1px solid #dadbdf;
                 border-radius: 4px;
                 margin: 0 5px;
                 min-width: 28px;
             }
         }
-        .el-pagination__jump{
+        .el-pagination__jump {
             display: inline-flex !important;
-            .el-input{
+            .el-input {
                 min-width: 50px;
             }
         }
     }
 }
-.pr0 { padding-right: 0; }
+.pr0 {
+    padding-right: 0;
+}
 
-.base_table_list_container{
-    .el-table{
+.base_table_list_container {
+    .el-table {
         width: 99.9% !important;
     }
-.el-table .el-table__body{
-    width: 100% !important;
-}
-.el-table th {
-    background: #F8F9FB !important
-}
-// 排序图标
-.el-table .sort-caret {
-    display: none !important;
-}
-.el-table .caret-wrapper{
-    width: 18px !important;
-    height: 36px !important;
-    margin-bottom: -15px;
-    font-family: 'element-icons' !important;
-    &::after {
-        content: "";
-        width: 8px;
-        height: 18px;
-        font-weight: 600;
-        font-size: 12px;
-        color: #eee;
-        background: url(~@/assets/image/index/icon_sort.png) no-repeat center;
-        background-size: contain;
+    .el-table .el-table__body {
+        width: 100% !important;
     }
-}
-.el-table .ascending .caret-wrapper{
-    &::after {
-        background: url(~@/assets/image/index/icon_sort_up.png) no-repeat center;
+    .el-table th {
+        background: #f8f9fb !important;
     }
-}
-.el-table .descending .caret-wrapper{
-    &::after {
-        background: url(~@/assets/image/index/icon_sort_down.png) no-repeat center;
+    // 排序图标
+    .el-table .sort-caret {
+        display: none !important;
     }
-}
-.el-table .el-table__cell .cell{
-    word-break: break-word;
-}
-.el-table .el-table__body-wrapper .cell {
-    line-height: 16px;
-}
+    .el-table .caret-wrapper {
+        width: 18px !important;
+        height: 36px !important;
+        margin-bottom: -15px;
+        font-family: "element-icons" !important;
+        &::after {
+            content: "";
+            width: 8px;
+            height: 18px;
+            font-weight: 600;
+            font-size: 12px;
+            color: #eee;
+            background: url(~@/assets/image/index/icon_sort.png) no-repeat
+                center;
+            background-size: contain;
+        }
+    }
+    .el-table .ascending .caret-wrapper {
+        &::after {
+            background: url(~@/assets/image/index/icon_sort_up.png) no-repeat
+                center;
+        }
+    }
+    .el-table .descending .caret-wrapper {
+        &::after {
+            background: url(~@/assets/image/index/icon_sort_down.png) no-repeat
+                center;
+        }
+    }
+    .el-table .el-table__cell .cell {
+        word-break: break-word;
+    }
+    .el-table .el-table__body-wrapper .cell {
+        line-height: 16px;
+    }
+
+    .el-table__footer{
+        .el-table__cell{
+            padding: 0;
+            background: #fff;
+        }
+        .cell{
+            padding: 0;
+        }
+    }
+    .summary_page{
+        padding: 12px 10px;
+        border-bottom: 1px solid #EBEEF5;
+    }
+    .summary_total{
+        padding: 12px 10px;
+    }
 }
 </style>

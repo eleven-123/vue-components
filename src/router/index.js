@@ -17,7 +17,7 @@ const childRoutes = [
 const routes = [
     {
       path: '/',
-      redirect: '/elTableList'
+      redirect: '/home'
     },
     {
       path: '/home',
@@ -34,4 +34,14 @@ const router = new Router({
     return { x: 0, y: 0 }
   }
 })
+
+// 解决VUE路由报错NAVIGATION ABORTED FROM “/A“ TO “/B“ VIA A NAVIGATION GUAR
+const originalPush = Router.prototype.push
+Router.prototype.push = function push (location, onResolve, onReject) {
+  if (onResolve || onReject){
+    return originalPush.call(this, location, onResolve, onReject)
+  }
+  return originalPush.call(this, location).catch(err => err)
+}
+
 export default router

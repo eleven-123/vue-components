@@ -1,0 +1,49 @@
+*{
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+/* 滚动条样式start */
+::-webkit-scrollbar {
+    width: 8px;
+    /*对垂直方向有效*/
+    height: 8px;
+    /*对水平方向有效*/
+    border-radius: 4px;
+}
+
+/*定义滚动条轨道 内阴影+圆角*/
+::-webkit-scrollbar-track {
+    background-color: rgba(0, 0, 0, 0);
+    opacity: 0;
+}
+
+::-webkit-scrollbar-track:hover {
+    background-color: rgba(0, 0, 0, .15);
+    border-radius: 4px;
+}
+
+/*定义滑块 内阴影+圆角*/
+::-webkit-scrollbar-thumb {
+    background-color: rgba(0, 0, 0, 0.25);
+    border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 4px;
+}
+
+
+.container{
+    height: 100%;
+}
+.page_title{
+    color: #222;
+    font-size: 16px;
+    font-weight: normal;
+}
+.page_content{
+    color: #333;
+}
+

@@ -1,3 +1,5 @@
+import { formatMoney } from '@/assets/js/utils'
+
 const columns = [
     {
         label: '上课分校',
@@ -15,13 +17,6 @@ const columns = [
       prop: "status",
       columnType: 'slot',
       slotName: "status"
-    },
-    {
-      label: '学费详情',
-      prop: "biztype",
-      width: 180,
-      columnType: 'slot',
-      slotName: "biztype"
     },
     {
       label: '级别情况',
@@ -43,42 +38,36 @@ const columns = [
     {
       label: '剩余节数',
       prop: "nodeNum",
-      isShowSummary:true,
+      sortable: true,
       totalProp:'totalnodeNum',
       pageTotalProp:'subtotalnodeNum',
-      columnType: 'slot',
-      slotName: "nodeNum"
     },
     {
       label: '欠费节数',
       prop: "arrearsNodeNum",
-      isShowSummary:true,
+      sortable: true,
       totalProp:'totalArrearsNodeNum',
       pageTotalProp:'subtotalArrearsNodeNum',
-      columnType: 'slot',
-      slotName: "arrearsNodeNum"
     },
     {
       label: '剩余费用',
       prop: "money",
-      isShowSummary:true, // 是否展示合计
-      isFormatMoney:true, // 合计时加单位
       totalProp:'totalmoney', // 合计的字段
       pageTotalProp:'subtotalmoney', // 本页合计的字段
-      columnType: 'slot',
-      slotName: "money",
-      formatterTotal: 'money'
+      formatterTotal: 'money',
+      formatter: row => {
+        return formatMoney(row.money)
+      }
     },
     {
       label: '欠费',
       prop: "arrearsMoney",
-      isShowSummary:true,
-      isFormatMoney:true,
       totalProp:'totalarrearsMoney',
       pageTotalProp:'subtotalarrearsMoney',
-      columnType: 'slot',
-      slotName: "arrearsMoney",
-      formatterTotal: 'money'
+      formatterTotal: 'money',
+      formatter: row => {
+        return formatMoney(row.arrearsMoney)
+      }
     },
     {
       label: '操作',
