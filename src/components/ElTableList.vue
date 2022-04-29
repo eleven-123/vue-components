@@ -200,7 +200,6 @@
     </div>
 </template>
 <script>
-import ElTableFooter from '@/components/ElTableFooter'
 import Pagination from "@/components/Pagination";
 import { removeResizeListener } from "element-ui/src/utils/resize-event";
 
@@ -227,7 +226,6 @@ export default {
             },
         },
         Pagination,
-        ElTableFooter
     },
     props: {
         list: {
@@ -342,8 +340,9 @@ export default {
             columns.forEach((column, index) => {                
                 let obj = this.columns.find(
                     (item) => item.prop === column.property
-                );                
-                if (index === 0) {
+                );
+                let newIndex = this.options.mutiSelect ? 1 : 0
+                if (index === newIndex) {
                     column.colSpan = this.options.mutiSelect ? 2 : 1
                     sums[index] = (() => {
                         let summaryPage, summaryTotal;
@@ -356,20 +355,21 @@ export default {
                         return <div>{summaryPage}{summaryTotal}</div>
                     })();
                     return;
-                }
-                if (obj) {
-                    sums[index] = (() => {
-                        let summaryPage, summaryTotal;
-                        if(this.showPageTotal){
-                            summaryPage = <div class='summary_page'>{this.formatterTotal(obj, this.extendsTotalData[obj.pageTotalProp])}</div>
-                        }
-                        if(this.showAllTotal){
-                            summaryTotal = <div class="summary_total">{this.formatterTotal(obj, this.extendsTotalData[obj.totalProp])}</div>
-                        }
-                        return <div>{summaryPage}{summaryTotal}</div>
-                    })();
-                } else {
-                    sums[index] = "";
+                }else{
+                    if (obj) {
+                        sums[index] = (() => {
+                            let summaryPage, summaryTotal;
+                            if(this.showPageTotal){
+                                summaryPage = <div class='summary_page'>{this.formatterTotal(obj, this.extendsTotalData[obj.pageTotalProp])}</div>
+                            }
+                            if(this.showAllTotal){
+                                summaryTotal = <div class="summary_total">{this.formatterTotal(obj, this.extendsTotalData[obj.totalProp])}</div>
+                            }
+                            return <div>{summaryPage}{summaryTotal}</div>
+                        })();
+                    } else {
+                        sums[index] = "";
+                    }
                 }
             });
             return sums;
@@ -547,6 +547,9 @@ export default {
     }
 
     .el-table__footer{
+        .el-table-column--selection{
+            display: none;
+        }
         .el-table__cell{
             padding: 0;
             background: #fff;
