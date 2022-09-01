@@ -1,19 +1,19 @@
 <template>
-  <div class="block btl_pagination" v-if="pageMessage.totalPage > 0">
+  <div class="block btl_pagination" v-if="total > 0">
     <el-pagination
       @size-change="handleSizeChange"
       @current-change="handleCurrentChange"
-      :current-page="pageMessage.currentPage"
-      :page-sizes="[10, 20, 50, 100]"
-      :page-size="pageMessage.pageSize"
+      :current-page="currentPage"
+      :page-sizes="pageSizes"
+      :page-size="pageSize"
        layout="total, prev, pager, next, sizes"
-      :total="pageMessage.totalPage"
+      :total="total"
     >
     </el-pagination>
       <div>
-          {{p_exchangeLang('跳至')}}
+          跳至
           <input @keyup="inputChange" class="input" v-model="pageIndex"/>
-          {{p_exchangeLang('页')}}
+          页
       </div>
   </div>
 </template>
@@ -21,19 +21,15 @@
 export default {
   methods: {
     handleSizeChange(val) {
-      this.pageMessage.pageSize = val;
-      this.$emit("getListData");
+      this.$emit("handleSizeChange", val)
     },
     handleCurrentChange(val) {
-      this.pageMessage.currentPage = val;
-      this.$emit("getListData");
+      this.$emit("handleCurrentChange", val)
     },
     inputChange(val) {
       if (val.key == 'Enter') {
         this.handleCurrentChange(Number(this.pageIndex))
         this.pageIndex = ''
-        // top.$('.input').blur()
-        // top.mainIframe.window.scrollTo(0, 0);
         return
       }
       this.pageIndex = this.pageIndex.replace(/[^\d]/g, '')
@@ -60,10 +56,26 @@ export default {
         return {};
       },
     },
+    currentPage: {
+      type: Number,
+      default: 1
+    },
+    pageSize: {
+      type: Number,
+      default: 10
+    },
+    pageSizes: {
+      type: Array,
+      default: [10, 20, 50, 100]
+    },
+    total: {
+      type: Number,
+      default: 0
+    },
   },
   computed: {
     pageCount() {
-      return this.pageMessage.totalPage ? Math.ceil(this.pageMessage.totalPage / this.pageMessage.pageSize) : 0
+      return this.total ? Math.ceil(this.total / this.pageSize) : 0
     }
   },
 };

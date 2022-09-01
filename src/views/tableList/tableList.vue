@@ -14,10 +14,13 @@
                 :showPageTotal="true"
                 :showAllTotal="true"
                 :extendsTotalData="data.data || {}"
+                :options="tableConfig.options"
                 @sizeChange="handleSizeChange"
                 @currentChange="handleCurrentChange"
                 @refresh="refresh"
                 @sortChange="sortChange"
+                @selectAll="selectAll"
+                @handleSelectionChange="handleSelectionChange"
             >
                 <!-- 插槽 -->
                 <template v-slot:status="slotData">
@@ -51,7 +54,10 @@ export default {
             tableConfig:{
                 columns: Template.columns,
                 hasPagination: true,
-                defaultSort: {prop: 'nodeNum', order: 'descending'}
+                defaultSort: {prop: 'nodeNum', order: 'descending'},
+                options:{
+                    mutiSelect: true
+                }
             },
             search:{
                 pagesize: 10,
@@ -62,6 +68,13 @@ export default {
     created(){
         this.getData()
     },
+    computed:{
+        // 多行选中
+        multipleSelection(){
+            let multipleSelected = this.data.list.filter(item => item.isChecked)
+            return multipleSelected
+        }
+    },
     filters:{
         filterStatus(status){
             return ['在学', '休学', '结业', '流失', '退费'][status] || ''
@@ -69,11 +82,20 @@ export default {
     },
     methods:{
         getData(){
-            this.p_post('/api/tablelist.json').then(res => {
+            const { pagesize, pageno } = this.search
+            this.p_post('/api/tablelist.json', {
+                pagesize,
+                pageno
+            }).then(res => {
                 let data = res || {};
+                const list = res.list || []
+                data.list = list.slice((pageno-1)*pagesize, pagesize*pageno)
+                
+                if(this.tableConfig.options.mutiSelect){
+                   data.list.forEach(item => item.isChecked = false) 
+                }
                 this.data = data
             })
-            
         },
         handleSizeChange(val){
             this.search.pagesize = val;
@@ -88,6 +110,13 @@ export default {
         },
         sortChange(val){
             console.log(val)
+        },
+        selectAll(val){
+            this.data.list.forEach(item => item.isChecked = val)
+            console.log('选中的行===', this.multipleSelection)
+        },
+        handleSelectionChange(){
+            console.log('选中的行===', this.multipleSelection)
         }
     }
 }

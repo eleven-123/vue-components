@@ -72,8 +72,14 @@ export default {
     },
     methods:{
         getData(){
-            this.p_post('/api/tablelist.json').then(res => {
+            const { pagesize, pageno } = this.search
+            this.p_post('/api/tablelist.json', {
+                pagesize,
+                pageno
+            }).then(res => {
                 let data = res || {};
+                const list = res.list || []
+                data.list = list.slice((pageno-1)*pagesize, pagesize*pageno)
                 this.data = data
             })
         },

@@ -188,7 +188,7 @@
             v-if="hasPagination"
             :class="paginationclass"
         >
-            <Pagination
+            <Pagination 
                 :currentPage="currentPage"
                 :pageSize="pageSize"
                 :pageSizes="pageSizes"
@@ -282,7 +282,7 @@ export default {
         },
         pageSizes: {
             type: Array,
-            default: () => [10, 20, 30, 40],
+            default: () => [10, 20, 50, 100],
         },
         hasPagination: {
             type: Boolean,

@@ -1,12 +1,14 @@
 <template>
     <div :style="{marginTop: marginTop+'px'}" class="base_table_list_container">
         <div class="el-table base_table">
-            <table>
+            <table border="0">
                 <!-- 表头 -->
                 <thead class="el-table__header-wrapper">
                     <tr>
-                        <th class="inputCheck" v-if="options.mutiSelect">
-                            <el-checkbox v-model="isAllChecked" @change="selectAll"></el-checkbox>
+                        <th class="inputCheck el-table__cell" v-if="options.mutiSelect">
+                            <div class="cell">
+                                <el-checkbox :value="isAllChecked" @change="selectAll"></el-checkbox>
+                            </div>
                         </th>
                         <th class="el-table__cell" v-for="column in columns" :key="column.prop" :style="formatterStyleObj(column)">
                             <div class="cell" :class="sortOrderProp == column.prop ? sortOrderType :''" v-if="column.customHeader"  @click="column.sortable ? sortChange(column) : ''"> {{column.order}}
@@ -38,8 +40,10 @@
                 <!-- 列表 -->
                 <tbody class="el-table__body-wrapper">
                     <tr v-for="(item, index) in list" :key="index">
-                        <td v-if="options.mutiSelect" class="colItem inputCheck" >
-                            <el-checkbox v-model="isAllChecked" @change="selectAll"></el-checkbox>
+                        <td v-if="options.mutiSelect" class="el-table__cell inputCheck" >
+                            <div class="cell">
+                                <el-checkbox v-model="item.isChecked" @change="handleSelectionChange"></el-checkbox>
+                            </div>
                         </td>
                         <td class="el-table__cell" :style="formatterStyleObj(column)" v-for="column in columns" :key="column.prop">
                             <div class="cell" v-if="column.columnType === 'slot'">
@@ -289,20 +293,20 @@ export default {
         isShowAllTotal() {
             return this.showAllTotal && this.list.length > 0
         },
+        // 全选
+        isAllChecked(){
+            let multipleSelected = this.list.filter(item => item.isChecked)
+            return multipleSelected.length > 0
+        }
     },
     data() {
         return {
             pageIndex: 1,
-            multipleSelection: [], // 多行选中
             sortOrderType: '', //排序的类型：ascending descending
-            sortOrderProp: '' //排序的项
+            sortOrderProp: '', //排序的项
         };
     },
     methods: {
-        handleSelectionChange(val) {
-            this.multipleSelection = val
-            this.$emit('handleSelectionChange', this.multipleSelection)
-        },
         handleSizeChange(pageSize){
             this.$emit('sizeChange', pageSize)
         },
@@ -312,8 +316,13 @@ export default {
         refresh(){
             this.$emit('refresh')
         },
+        // 全选
         selectAll(val){
             this.$emit('selectAll', val)
+        },
+        // 单选
+        handleSelectionChange(val){
+            this.$emit('handleSelectionChange', val)
         },
         // 排序
         sortChange(val){
@@ -501,6 +510,10 @@ export default {
     .el-table__body-wrapper tr:hover {
         background-color: #eee;
     }
+}
+.inputCheck{
+    min-width: auto !important;
+    width: 50px !important;
 }
 }
 </style>
