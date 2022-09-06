@@ -12,7 +12,17 @@ const childRoutes = [
     path: '/tableList',
     name: 'tableList',
     component: () => import(/* webpackChunkName: "tableList" */ '@/views/tableList/tableList'),
-  }
+  },
+  {
+    path: '/classSchedule',
+    name: 'classSchedule',
+    component: () => import(/* webpackChunkName: "classSchedule" */ '@/views/classSchedule/classSchedule'),
+  },
+  {
+    path: '/reserveSite',
+    name: 'reserveSite',
+    component: () => import(/* webpackChunkName: "reserveSite" */ '@/views/classSchedule/reserveSite'),
+  },
 ]
 const routes = [
     {

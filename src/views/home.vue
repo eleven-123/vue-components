@@ -64,8 +64,26 @@ export default {
           ]
         },
         {
-          title: '其他',
+          title: '课表',
           index: '2',
+          url: '',
+          icon: 'tickets',
+          subMenu: [
+            {
+              title: '课表',
+              url: '/classSchedule',
+              index: '2-1'
+            },
+            {
+              title: '预约场地',
+              url: 'reserveSite',
+              index: '2-2'
+            }
+          ]
+        },
+        {
+          title: '其他',
+          index: '3',
           url: '',
         }
       ],
