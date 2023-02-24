@@ -28,7 +28,7 @@
       <el-header class="main_header">
         <div class="header_right">
           <el-button type="text" class="icon_collapse">
-            <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'" @click="isCollapse = !isCollapse"></i>
+            <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'" @click="setFold"></i>
           </el-button> 
         </div>
       </el-header>
@@ -70,33 +70,51 @@ export default {
           icon: 'tickets',
           subMenu: [
             {
-              title: '课表',
-              url: '/classSchedule',
+              title: '日课表',
+              url: '/dayCourseTable',
               index: '2-1'
             },
             {
-              title: '预约场地',
-              url: 'reserveSite',
+              title: '周课表',
+              url: '/weekCourseTable',
               index: '2-2'
+            },
+            {
+              title: '月课表',
+              url: '/monthCourseTable',
+              index: '2-3'
             }
           ]
         },
         {
-          title: '其他',
+          title: '预约场地',
           index: '3',
+          url: 'reserveSite',
+        },
+        {
+          title: '其他',
+          index: '4',
           url: '',
         }
       ],
       defaultActive:{
         index: ''
       },
-      isCollapse: false
+    }
+  },
+  computed:{
+    isCollapse(){
+      return this.$store.state.isFold || false
     }
   },
   methods:{
     toChangeMenu(item){
       item.url = item.url || '/home'
       this.$router.push(item.url)
+    },
+    setFold(){
+      // isCollapse = !isCollapse
+      this.$store.commit('setFold', !this.isCollapse)
     }
   },
   created(){

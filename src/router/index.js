@@ -14,14 +14,24 @@ const childRoutes = [
     component: () => import(/* webpackChunkName: "tableList" */ '@/views/tableList/tableList'),
   },
   {
-    path: '/classSchedule',
-    name: 'classSchedule',
-    component: () => import(/* webpackChunkName: "classSchedule" */ '@/views/classSchedule/classSchedule'),
-  },
-  {
     path: '/reserveSite',
     name: 'reserveSite',
-    component: () => import(/* webpackChunkName: "reserveSite" */ '@/views/classSchedule/reserveSite'),
+    component: () => import(/* webpackChunkName: "reserveSite" */ '@/views/reserveSite/reserveSite'),
+  },
+  {
+    path: '/dayCourseTable',
+    name: 'dayCourseTable',
+    component: () => import(/* webpackChunkName: "dayCourseTable" */ '@/views/courseTable/dayCourseTable'),
+  },
+  {
+    path: '/weekCourseTable',
+    name: 'weekCourseTable',
+    component: () => import(/* webpackChunkName: "weekCourseTable" */ '@/views/courseTable/weekCourseTable'),
+  },
+  {
+    path: '/monthCourseTable',
+    name: 'monthCourseTable',
+    component: () => import(/* webpackChunkName: "monthCourseTable" */ '@/views/courseTable/monthCourseTable'),
   },
 ]
 const routes = [

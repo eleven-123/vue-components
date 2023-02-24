@@ -85,6 +85,8 @@ export function formatTime(date, type, str = '-') {
     return t2
   } else if (type === 3) {
     return `${t1} ${t3}`
+  } else if (type === 4) {
+    return t3
   } else if (type === 'object') {
     return {
       week,
