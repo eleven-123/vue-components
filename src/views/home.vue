@@ -92,8 +92,20 @@ export default {
           url: 'reserveSite',
         },
         {
-          title: '其他',
+          title: '自定义模板',
           index: '4',
+          url: '',
+          subMenu: [
+            {
+              title: '证书模板',
+              url: '/certificate',
+              index: '4-1'
+            },
+          ]
+        },
+        {
+          title: '其他',
+          index: '5',
           url: '',
         }
       ],
