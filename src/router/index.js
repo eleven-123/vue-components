@@ -33,6 +33,11 @@ const childRoutes = [
     name: 'monthCourseTable',
     component: () => import(/* webpackChunkName: "monthCourseTable" */ '@/views/courseTable/monthCourseTable'),
   },
+  {
+    path: '/certificate',
+    name: 'certificate',
+    component: () => import(/* webpackChunkName: "certificate" */ '@/views/customTemplate/certificate'),
+  },
 ]
 const routes = [
     {
