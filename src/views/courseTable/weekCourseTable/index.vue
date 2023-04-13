@@ -29,7 +29,7 @@ export default {
   },
   methods:{
     getCourseData(){
-      this.p_post('/api/getCourseList.json').then(res => {
+      this.p_post('/api/getCourseList').then(res => {
         let rowData = getHourList(res.schoolstarttime, res.schoolendtime)
         rowData.forEach((item) => {
           item.list = new Array(7).fill("").map(() => []);
