@@ -5,7 +5,9 @@
       v-for="(item, index) in courseList" 
       :key="index"
     >
-      <h4 class="course_title">{{item.courseName || '练琴'}}</h4>
+      <h4 class="course_title">
+        <span>{{item.courseName || '练琴'}} </span>
+        <span>{{item.courseType | filterCourseType}}</span></h4>
       <div class="course_inner">
         <p>{{item.startTime | filterFormatTime}}~{{item.endTime | filterFormatTime}}</p>      
         <p>{{item.student}}</p>
@@ -36,11 +38,13 @@ export default {
   filters:{
     filterFormatTime(time){
       return formatTime(time, 4)
+    },
+    filterCourseType(type){
+      return ['个', '集', '琴'][type-1]
     }
   },
   data(){
     return{
-      // tableStyleConfig: getTableStyleConfig()
     }
   },
   methods:{
@@ -80,6 +84,15 @@ export default {
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
+    display: flex;
+    justify-content: space-between;
+    span{
+      display: -webkit-box;
+      -webkit-line-clamp: 1;
+      -webkit-box-orient: vertical;
+      text-overflow: ellipsis;
+
+    }
   }
   .course_inner{
     padding: 2px 5px;

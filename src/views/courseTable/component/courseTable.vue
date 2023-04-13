@@ -185,7 +185,7 @@ export default {
       line-height: 40px;
     }
     .course_table_item{
-      min-height: 100px;
+      min-height: 80px;
       padding: 5px;
     }
     .course_table_header, .course_table_item{

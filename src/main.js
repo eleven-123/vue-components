@@ -9,6 +9,9 @@ import '@/assets/js/prototype'
 // element引入
 import '@/assets/js/element-import.js'
 
+// mock
+import "@/mock";
+
 Vue.config.productionTip = false
 
 new Vue({

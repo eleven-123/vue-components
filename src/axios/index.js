@@ -23,11 +23,16 @@ const defaultConfig = {
 const instance = getinstance(config.url, resolveResponse)
 
 function getinstance(publicIp, resolveResponse){
-    const instance = axios.create({ // 创建axios实例，在这里可以设置请求的默认配置
+    let option = { // 创建axios实例，在这里可以设置请求的默认配置
         timeout: 1000 * 60 * 10, // 设置超时时间10分钟
         withCredentials: true, // 设置当跨域请求时发送cookie
         baseURL: publicIp // 根据自己配置的反向代理去设置不同环境的baeUrl
-    })
+    }
+    if (process.env.NODE_ENV == "development") { 
+        // 开发环境中
+        delete option.baseURL
+    }
+    const instance = axios.create(option)
     /** 添加响应拦截器  **/
     instance.interceptors.response.use(response => {
         return resolveResponse({ response })
@@ -40,7 +45,7 @@ function getinstance(publicIp, resolveResponse){
 /* 统一封装post请求  */
 export const post = (url, data, config = {}) => {
     config = Object.assign({
-      method: 'get',
+      method: 'post',
       url,
       data,
     }, defaultConfig, config)
