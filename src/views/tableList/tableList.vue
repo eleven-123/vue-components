@@ -83,7 +83,7 @@ export default {
     methods:{
         getData(){
             const { pagesize, pageno } = this.search
-            this.p_post('/api/tablelist.json', {
+            this.p_post('/api/tablelist', {
                 pagesize,
                 pageno
             }).then(res => {
