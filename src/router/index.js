@@ -46,14 +46,15 @@ const routes = [
     },
     {
       path: '/home',
-      name: 'Home',
+      name: 'home',
       component: () => import(/* webpackChunkName: "home" */ '@/views/home'),
-      children: childRoutes
     },
+    ...childRoutes
 ]
 
 const router = new Router({
-  mode: 'hash',
+  // mode: 'hash',
+  mode: 'history',
   routes,
   scrollBehavior () {
     return { x: 0, y: 0 }
