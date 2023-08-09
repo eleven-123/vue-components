@@ -9,7 +9,7 @@
           <template v-if="item.subMenu && item.subMenu.length > 0">
             <el-submenu :index="item.index" :key="item.index">
               <template slot="title">
-                <i class="el-icon-setting"></i>
+                <i :class="item.icon ? 'el-icon-'+item.icon : 'el-icon-setting'"></i>
                 <span slot="title">{{item.title}}</span>
               </template>
               <el-menu-item :index="subMenu.index" v-for="(subMenu, k) in item.subMenu" :key="k" @click="toChangeMenu(subMenu)">
@@ -18,7 +18,7 @@
             </el-submenu>
           </template>
           <el-menu-item v-else :key="item.index" :index="item.index" @click="toChangeMenu(item)">
-            <i class="el-icon-setting"></i>
+            <i :class="item.icon ? 'el-icon-'+item.icon : 'el-icon-setting'"></i>
             <span slot="title">{{item.title}}</span>
           </el-menu-item>
         </template>
@@ -49,7 +49,7 @@ export default {
           title: 'tableList组件',
           index: '1',
           url: '',
-          icon: 'setting',
+          icon: 'tickets',
           subMenu: [
             {
               title: 'el-table-component',
@@ -61,6 +61,19 @@ export default {
               url: '/tableList',
               index: '1-2'
             }
+          ]
+        },
+        {
+          title: '日期选择器',
+          index: '6',
+          url: '',
+          icon: 'date',
+          subMenu: [
+            {
+              title: '日期时间选择器',
+              url: '/datetimePicker',
+              index: '6-1'
+            },
           ]
         },
         {

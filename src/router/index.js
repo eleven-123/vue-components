@@ -38,6 +38,12 @@ const childRoutes = [
     name: 'certificate',
     component: () => import(/* webpackChunkName: "certificate" */ '@/views/customTemplate/certificate'),
   },
+  {
+    path: '/datetimePicker',
+    name: 'datetimePicker',
+    component: () => import(/* webpackChunkName: "datetimePicker" */ '@/views/datePicker/datetimePicker'),
+  },
+  
 ]
 const routes = [
     {
