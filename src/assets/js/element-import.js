@@ -51,7 +51,10 @@ import {
   Slider,
   Progress,
   InputNumber,
-  InfiniteScroll
+  InfiniteScroll,
+  Dropdown,
+  DropdownItem,
+  DropdownMenu
 } from 'element-ui'
 Vue.use(Progress)
 Vue.use(InputNumber)
@@ -103,5 +106,7 @@ Vue.use(Step)
 Vue.use(Badge)
 Vue.use(InfiniteScroll)
 Vue.use(Slider)
-
+Vue.use(Dropdown)
+Vue.use(DropdownItem)
+Vue.use(DropdownMenu)
 Vue.prototype.$message = Message

@@ -12,9 +12,13 @@ import '@/assets/js/element-import.js'
 // mock
 import "@/mock";
 
+// 多语言
+import i18n from './lang'
+
 Vue.config.productionTip = false
 
 new Vue({
+  i18n,
   router,
   store,
   render: h => h(App),

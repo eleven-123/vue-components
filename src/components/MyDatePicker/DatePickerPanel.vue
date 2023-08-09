@@ -7,7 +7,7 @@
     </div>
     <div class="date-picker-panel_content" v-if="panelType == 3">      
       <div class="month-table">
-        <div class="cell-box" :class="{ active : index + 1 == thisMonth && thisYear == date[0], disabled: getDiasbled(date[0], index + 1)}" v-for="(month, index) in months" :key="index" @click="handleMonthClick(index + 1)">{{ month}}</div>
+        <div class="cell-box" :class="{ active : index + 1 == thisMonth && thisYear == date[0], disabled: getDiasbled(date[0], index + 1)}" v-for="(month, index) in months" :key="index" @click="handleMonthClick(index + 1)">{{ $t("datepicker.months."+month)}}</div>
       </div>
     </div>
     <div class="date-picker-panel_content" v-if="panelType == 1">
@@ -15,7 +15,7 @@
       <div class="date-table table-box">
         <table cellspacing="0" cellpadding="0">
           <tr>
-            <th v-for="item in weekList" :key="item">{{ item }}</th>
+            <th v-for="item in weekList" :key="item">{{ $t("datepicker.weeks."+item) }}</th>
           </tr>
           <tr v-for="(item, index) in dateList" :key="index" class="date-table__row">
             <td v-for="date in item" :key="date.index" :class="{disabled: getDiasbledDate(date.date)}">
@@ -36,7 +36,7 @@
 
       <!-- 时间 -->
       <div class="time-table table-box"  v-if="type == 'datetime'">
-        <div class="cell-title">时间</div>
+        <div class="cell-title">{{$t('datepicker.time')}}</div>
         <ul class="time-list">
           <li 
             :class="{actived:selectedTime == item.value, disabled: getTimeDisabled(item.value)}" 
@@ -49,8 +49,8 @@
     </div>
 
     <div class="date-picker-panel_footer" v-if="type == 'datetime'">
-      <el-button v-if="isShow" type="text" size="mini" @click="confimDate(1)">此刻</el-button>
-      <el-button size="mini" plain @click="confimDate()">确定</el-button>
+      <el-button v-if="isShow" type="text" size="mini" @click="confimDate(1)">{{$t('datepicker.now')}}</el-button>
+      <el-button size="mini" plain @click="confimDate()">{{$t('datepicker.confirm')}}</el-button>
     </div>
   </div>
 </template>
@@ -158,12 +158,13 @@
     },
     data () {
       return {
-        weekList: ["日", "一", "二", "三", "四", "五", "六"],
+        // weekList: ["日", "一", "二", "三", "四", "五", "六"],
+        weekList: ["sun", "mon", "tue", "wed", "thu", "fri", "sat"],
         timeList: [],
         selectedTime: '', //当前选中的时间
         selectedDate: '', //当前选中日期
-        // months: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec']
-        months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+        // months: ['一月', '二月', '三月', '四月', '五月', '六月', '七月', '八月', '九月', '十月', '十一月', '十二月'],
+        months: ['jan', 'feb', 'mar', 'apr', 'may', 'jun', 'jul', 'aug', 'sep', 'oct', 'nov', 'dec'],
         yearTable: [],
         minTime: '',
         maxTime: '',

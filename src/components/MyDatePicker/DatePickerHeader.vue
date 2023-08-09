@@ -3,9 +3,10 @@
     <i @click="changeYear(0)" class="el-icon-d-arrow-left"></i>
     <i @click="changeMonth(0)" class="el-icon-arrow-left" v-show="panelType == 1"></i>
     <div class="date-content">
-      <span v-show="panelType == 2">{{ statrYear }}年 - {{statrYear + 10}}年</span>
-      <span @click="changePanel(2)" v-show="panelType != 2">{{ date[0] }} 年</span> 
-      <span @click="changePanel(3)" v-show="panelType == 1">{{ Number(date[1]) }}月</span>
+      <span v-show="panelType == 2">{{ statrYear }}{{$t('datepicker.year')}} - {{statrYear + 10}}{{$t('datepicker.year')}}</span>
+      <span @click="changePanel(2)" v-show="panelType != 2">{{ date[0] }} {{$t('datepicker.year')}}</span> 
+      <span @click="changePanel(3)" v-show="panelType == 1">{{ $t('datepicker.month'+Number(date[1])) }}</span>
+
     </div>
     <i @click="changeMonth(1)" class="el-icon-arrow-right" v-show="panelType == 1"></i>
     <i @click="changeYear(1)" class="el-icon-d-arrow-right"></i>

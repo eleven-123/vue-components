@@ -29,7 +29,15 @@
         <div class="header_right">
           <el-button type="text" class="icon_collapse">
             <i :class="isCollapse ? 'el-icon-s-unfold' : 'el-icon-s-fold'" @click="setFold"></i>
-          </el-button> 
+          </el-button>
+          <el-dropdown class="language_box" @command="handleLangClick">
+            <span class="el-dropdown-link">
+              {{language}}<i class="el-icon-arrow-down el-icon--right"></i>
+            </span>
+            <el-dropdown-menu slot="dropdown">
+              <el-dropdown-item class="lang_itme" :class="{on: language === item.name}" :command='item.lang' v-for="item in langList" :key="item.lang">{{item.name}}</el-dropdown-item>
+            </el-dropdown-menu>
+          </el-dropdown>
         </div>
       </el-header>
       <div class="main_content">
@@ -125,6 +133,12 @@ export default {
       defaultActive:{
         index: ''
       },
+      language: '语言',
+      langList:[
+        {lang: 'zh', name: '简体中文'},
+        {lang: 'tw', name: '繁體中文'},
+        {lang: 'en', name: 'English'}
+      ]
     }
   },
   computed:{
@@ -140,9 +154,21 @@ export default {
     setFold(){
       // isCollapse = !isCollapse
       this.$store.commit('setFold', !this.isCollapse)
+    },
+    showLanguage(){
+      const lang = localStorage.lang || 'zh'
+      this.language = this.langList.find(v => v.lang === lang).name
+    },
+    // 切换语言
+    handleLangClick(lang){
+      if(this.$i18n.locale == lang) return false;
+      this.$i18n.locale = lang
+      localStorage.lang = lang
+      location.reload()
     }
   },
   created(){
+    this.showLanguage()
     let path = this.$route.path;
     for(let i = 0; i < this.menu.length; i++){
       let item = this.menu[i];
@@ -191,6 +217,15 @@ export default {
       .icon_collapse{
         font-size: 20px;
       }
+      .language_box{
+        float: right;
+        cursor: pointer;
+        line-height: 24px;
+        margin-top: 18px;
+        .lang_itme{
+          border: 1px solid red;
+        }
+      }
     }
     .main_content{
       height: calc(100% - 70px);
@@ -203,4 +238,11 @@ export default {
   }
 }
 
+</style>
+<style lang="scss">
+.lang_itme{
+  &.on{
+    color: #409EFF;
+  }
+}
 </style>
