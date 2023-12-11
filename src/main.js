@@ -13,7 +13,7 @@ import '@/assets/js/element-import.js'
 import "@/mock";
 
 // 子应用
-import { useQiankun } from './qiankun/qiankun'
+import { useQiankun } from './qiankun'
 
 Vue.config.productionTip = false
 

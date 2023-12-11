@@ -8,6 +8,7 @@
 
 <script>
 import Layout from './views/layout.vue'
+import { qiankunSubApp } from './qiankun/config'
 export default {
   name: 'App',
   components:{
